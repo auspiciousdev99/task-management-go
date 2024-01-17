@@ -1,0 +1,234 @@
+basePath: /api
+definitions:
+  model.Task:
+    properties:
+      desc:
+        example: Test task.
+        type: string
+      duedate:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      priority:
+        example: 1
+        type: integer
+      title:
+        example: Task1
+        type: string
+    type: object
+  model.TaskRequestPayload:
+    properties:
+      desc:
+        example: Test task.
+        type: string
+      duedate:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+      priority:
+        example: 1
+        type: integer
+      title:
+        example: Task1
+        type: string
+    type: object
+  types.JSONResult:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data: {}
+      message:
+        example: success
+        type: string
+    type: object
+  types.Pageable:
+    properties:
+      has_next:
+        type: boolean
+      has_prev:
+        type: boolean
+      limit:
+        type: integer
+      next:
+        type: integer
+      offset:
+        type: integer
+      prev:
+        type: integer
+      total:
+        type: integer
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: This is a sample server for Notethingness API.
+  title: Notethingness API
+  version: "1"
+paths:
+  /tasks:
+    get:
+      consumes:
+      - application/json
+      description: Get List tasks
+      parameters:
+      - default: "0"
+        description: string default example
+        example: "1"
+        in: query
+        name: offset
+        type: string
+      - default: "10"
+        description: string default example
+        example: "20"
+        in: query
+        name: limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/types.JSONResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Task'
+                  type: array
+                length:
+                  type: integer
+                paginate:
+                  $ref: '#/definitions/types.Pageable'
+              type: object
+        "400":
+          description: 'error: offset or limit is invalid'
+          schema:
+            type: string
+      tags:
+      - task
+    post:
+      consumes:
+      - application/json
+      description: Create a task
+      parameters:
+      - description: default
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.TaskRequestPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/types.JSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Task'
+              type: object
+        "400":
+          description: 'Bad Request: Invalid payload'
+          schema:
+            type: string
+      summary: Create a task
+      tags:
+      - task
+  /tasks/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a task by id
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: 'error: id is invalid'
+          schema:
+            type: string
+        "404":
+          description: 'error: task not found'
+          schema:
+            type: string
+      summary: Delete a task
+      tags:
+      - task
+    get:
+      consumes:
+      - application/json
+      description: Get a task by id
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/types.JSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Task'
+              type: object
+        "400":
+          description: 'error: id is invalid'
+          schema:
+            type: string
+        "404":
+          description: 'error: task not found'
+          schema:
+            type: string
+      summary: Get a task
+      tags:
+      - task
+    put:
+      consumes:
+      - application/json
+      description: Create a task
+      parameters:
+      - description: default
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.TaskRequestPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/types.JSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Task'
+              type: object
+        "400":
+          description: 'Bad Request: Invalid payload'
+          schema:
+            type: string
+      summary: Create a task
+      tags:
+      - task
+swagger: "2.0"
